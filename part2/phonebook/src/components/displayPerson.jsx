@@ -1,4 +1,4 @@
-const DisplayPerson = ({ persons }) => {
+const DisplayPerson = ({ persons, deletePerson }) => {
   return (
     <>
       <h2>Numbers</h2>
@@ -6,7 +6,10 @@ const DisplayPerson = ({ persons }) => {
         return (
           <p key={person.id}>
             {person.name} {person.number}
+            <span>  </span>
+            <button onClick={() => deletePerson(person.id)}>delete</button>
           </p>
+
         );
       })}
     </>
