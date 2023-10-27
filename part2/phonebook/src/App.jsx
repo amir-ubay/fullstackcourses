@@ -4,12 +4,15 @@ import DisplayPerson from "./components/displayPerson";
 import AddPerson from "./components/addPerson";
 import Filter from "./components/filter";
 import personService from "./services/persons";
+import Notifications from "./components/notifications";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newPerson, setNewPerson] = useState({ name: "", number: "" });
   const [filter, setFilter] = useState("");
   const [filteredPerson, setFilteredPerson] = useState(persons);
+  const [notify, setNotify] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     console.log("Start use effect");
@@ -21,8 +24,12 @@ const App = () => {
       })
   }, [])
 
-
-  
+  const setNotif = (message) => {
+    setNotify(message);
+    setTimeout(() => {
+      setNotify(null)
+    }, 2000)
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,6 +54,7 @@ const App = () => {
           .then(response => {
             setPersons(persons.map(person => person.id === response.id ? {...person, number: newPerson.number} : person))
             setNewPerson({ name: "", number: "" });
+            setNotif(response.name + " was updated to phonebook")
           })
       }
     } else {
@@ -55,6 +63,7 @@ const App = () => {
           .then(response => {
             setPersons(persons.concat(response));
             setNewPerson({ name: "", number: "" });
+            setNotif(response.name + " was added to phonebook")
           })  
     }
   };
@@ -86,12 +95,25 @@ const App = () => {
         console.log("response delete: ", response);
         setPersons(persons.filter(person => person.id !== id))
       })
+      .catch(error => {
+        const status = error.response.statusText
+        setError(true)
+        if (status === "Not Found") {
+          setNotify(`${toDelete.name} was already deleted`)
+          setTimeout(() => {
+            setError(false)
+            setNotify(null)
+          }, 5000)
+        }
+      })
     }
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
+      {notify && !error && <Notifications className="notification" message={notify} />}
+      {error && <Notifications className="error" message={`Information of ${notify} has already been removed from server`} />}
       <Filter filter={filter} handleFilter={handleFilter} />
       <AddPerson
         handleSubmit={handleSubmit}
