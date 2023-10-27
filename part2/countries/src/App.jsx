@@ -12,7 +12,6 @@ const App = () => {
 
   const getCountries = () => {
     Country.getCountries().then((data) => {
-      console.log("data: ", data);
       const initialData = data.map((country) => country.name.common);
       setCountries(initialData);
     });
@@ -25,7 +24,7 @@ const App = () => {
   const handleFilter = (event) => {
     const value = event.target.value;
     setFilter(value);
-    if(value === "") {
+    if (value === "") {
       setFilteredData([]);
       return;
     }
@@ -41,47 +40,9 @@ const App = () => {
         Find Countries: <span></span>
         <input type="text" value={filter} onChange={handleFilter} />
       </div>
-      <SearchResult countries={filteredData}>
-        <Weather filteredData={filteredData}/>
-      </SearchResult>
-      
+      <SearchResult countries={filteredData}></SearchResult>
     </>
   );
 };
-
-// const SearchResult = ({ countries }) => {
-//   if (countries.length > 10) {
-//     return <div>Too many matches, specify another filter</div>;
-//   } else if (countries.length === 1) {
-//     return <DetailCountry name={countries[0]} />;
-//   }
-
-//   const [show, setShow] = useState("");
-
-//   const handleShow = (country) => {
-//     setShow(country);
-//     // if (show !== "") {
-//     //   setShow("");
-//     // } else {
-//     //   setShow(country);
-//     // }
-//   };
-
-//   return (
-//     <div>
-//       {countries.map((country) => (
-//         <div key={country}>
-//           {country}
-//           <span></span>
-//           <button onClick={() => handleShow(country)}>show</button>
-//         </div>
-//       ))}
-//       {/* {show && <DetailCountry name={show} />} */}
-//       <DetailCountry name={show} />
-//       <div>debug: {show}</div>
-//     </div>
-//   );
-// };
-
 
 export default App;
