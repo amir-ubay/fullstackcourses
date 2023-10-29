@@ -64,9 +64,9 @@ const App = () => {
       }
     } else {
       personService.create(newPerson).then((response) => {
-        setPersons(persons.concat(response));
+        setPersons(response);
+        setNotif(newPerson.name + " was added to phonebook");
         setNewPerson({ name: "", number: "" });
-        setNotif(response.name + " was added to phonebook");
       });
     }
   };
@@ -138,6 +138,7 @@ const App = () => {
       ) : (
         <DisplayPerson persons={persons} deletePerson={handleDelete} />
       )}
+      <span>Version: 1.0.0 (Ready to submit)</span>
     </div>
   );
 };
