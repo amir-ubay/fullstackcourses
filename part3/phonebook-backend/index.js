@@ -29,6 +29,8 @@ const errorHandler = (error, request, response, next) => {
   console.log(error.message)
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id'})
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message })
   }
   next(error)
 }
@@ -74,13 +76,13 @@ app.get('/info', (request, response) => {
   })
 })
 
-app.get('/api/info', (request, response) => { 
+app.get('/api/info', (request, response, next) => { 
     const time = new Date()
     response.send(`<p>Phonebook has infor for ${persons.length} people</p><p>${time}</p>`)
     
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const newPerson = new Person({
     name: request.body.name,
     number: request.body.number
@@ -89,6 +91,9 @@ app.post('/api/persons', (request, response) => {
     .then(result => { 
       console.log("add new person: ", result);
       response.json(result)
+    })
+    .catch(error => {
+      next(error)
     })
 })
 
@@ -125,7 +130,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number
   }
 
-  Person.findByIdAndUpdate(request.params.id, updatePerson, { new: true })
+  Person.findByIdAndUpdate(request.params.id, updatePerson, { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
       response.json(updatedPerson)
     })

@@ -6,6 +6,16 @@ POST  http://localhost:3001/api/persons HTTP/1.1
 content-type: application/json
 
 {
-    "name": "Kedele Malika",
-    "number": "12345"
+    "name": "i",
+    "number": "l"
+}
+
+###
+
+PUT http://localhost:3001/api/persons/6542924ba0dd4ca76befb75e HTTP/1.1
+content-type: application/json
+
+{
+    "name": "i",
+    "number": "1"
 }
