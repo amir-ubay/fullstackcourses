@@ -6,10 +6,9 @@ const DisplayPerson = ({ persons, deletePerson }) => {
         return (
           <p key={person.id}>
             {person.name} {person.number}
-            <span>  </span>
+            <span> </span>
             <button onClick={() => deletePerson(person.id)}>delete</button>
           </p>
-
         );
       })}
     </>

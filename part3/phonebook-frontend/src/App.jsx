@@ -4,6 +4,7 @@ import DisplayPerson from "./components/displayPerson";
 import AddPerson from "./components/addPerson";
 import Filter from "./components/filter";
 import personService from "./services/persons";
+import infoService from "./services/infos";
 import Notifications from "./components/notifications";
 
 const App = () => {
@@ -17,7 +18,7 @@ const App = () => {
   useEffect(() => {
     console.log("Start use effect");
     personService.getAll().then((initialData) => {
-      console.log("Fulfilled request service");
+      console.log("Fulfilled request service to get all data");
       setPersons(initialData);
     });
   }, []);
@@ -34,7 +35,6 @@ const App = () => {
     const duplicated = persons.filter(
       (person) => person.name.toLowerCase() === newPerson.name.toLowerCase()
     );
-    console.log("duplicated: ", duplicated);
     const confirmText =
       " is already added to phonebook. Do you want to replace the old number with a new one?";
 
@@ -64,7 +64,8 @@ const App = () => {
       }
     } else {
       personService.create(newPerson).then((response) => {
-        setPersons(response);
+        const updatedPersons = [...persons, response];
+        setPersons(updatedPersons);
         setNotif(newPerson.name + " was added to phonebook");
         setNewPerson({ name: "", number: "" });
       });
@@ -86,6 +87,12 @@ const App = () => {
       person.name.toLowerCase().includes(filterData.toLowerCase())
     );
     setFilteredPerson(filterPerson);
+  };
+
+  const handleInfo = () => {
+    infoService.getMain().then((response) => {
+      console.log(response);
+    });
   };
 
   const handleDelete = (id) => {
@@ -138,7 +145,6 @@ const App = () => {
       ) : (
         <DisplayPerson persons={persons} deletePerson={handleDelete} />
       )}
-      <span>Version: 1.0.0 (Ready to submit)</span>
     </div>
   );
 };
