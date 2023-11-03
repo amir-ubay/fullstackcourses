@@ -63,12 +63,25 @@ const App = () => {
         });
       }
     } else {
-      personService.create(newPerson).then((response) => {
-        const updatedPersons = [...persons, response];
-        setPersons(updatedPersons);
-        setNotif(newPerson.name + " was added to phonebook");
-        setNewPerson({ name: "", number: "" });
-      });
+      personService
+        .create(newPerson)
+        .then((response) => {
+          const updatedPersons = [...persons, response];
+          setPersons(updatedPersons);
+          setNotif(newPerson.name + " was added to phonebook");
+          setNewPerson({ name: "", number: "" });
+        })
+        .catch((error) => {
+          // setError(true);
+          // setNotif(error.response.data.error);
+          console.log("error: ", error.response.data.error);
+          setError(true);
+          const message = error.response.data.error;
+          setNotif(message);
+          setTimeout(() => {
+            setError(false);
+          }, 5000);
+        });
     }
   };
 
@@ -106,6 +119,7 @@ const App = () => {
         .then((response) => {
           console.log("response delete: ", response);
           setPersons(persons.filter((person) => person.id !== id));
+          setNotif(toDelete.name + " was deleted from phonebook");
         })
         .catch((error) => {
           const status = error.response.statusText;
@@ -124,14 +138,10 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      {notify && !error && (
+      {notify && error ? (
+        <Notifications className="error" message={notify} />
+      ) : (
         <Notifications className="notification" message={notify} />
-      )}
-      {error && (
-        <Notifications
-          className="error"
-          message={`Information of ${notify} has already been removed from server`}
-        />
       )}
       <Filter filter={filter} handleFilter={handleFilter} />
       <AddPerson

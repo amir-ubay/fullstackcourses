@@ -25,10 +25,10 @@ app.use(morgan(function (tokens, req, res) {
   ].join(' ')
 }))
 
-const errorHandler = (error, request, response, next) => { 
+const errorHandler = (error, request, response, next) => {
   console.log(error.message)
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id'})
+    return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     return response.status(400).send({ error: error.message })
   }
@@ -40,24 +40,24 @@ const unknownEndpoint = (request, response) => {
 }
 
 // let persons = [
-//     { 
+//     {
 //       "id": 1,
-//       "name": "Arto Hellas", 
+//       "name": "Arto Hellas",
 //       "number": "040-123456"
 //     },
-//     { 
+//     {
 //       "id": 2,
-//       "name": "Ada Lovelace", 
+//       "name": "Ada Lovelace",
 //       "number": "39-44-5323523"
 //     },
-//     { 
+//     {
 //       "id": 3,
-//       "name": "Dan Abramov", 
+//       "name": "Dan Abramov",
 //       "number": "12-43-234345"
 //     },
-//     { 
+//     {
 //       "id": 4,
-//       "name": "Mary Poppendieck", 
+//       "name": "Mary Poppendieck",
 //       "number": "39-23-6423122"
 //     }
 // ]
@@ -65,7 +65,7 @@ const unknownEndpoint = (request, response) => {
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(result => {
     response.json(result)
-    console.log("log get person: ", result);
+    console.log('log get person: ', result)
 
   })
 })
@@ -76,10 +76,10 @@ app.get('/info', (request, response) => {
   })
 })
 
-app.get('/api/info', (request, response, next) => { 
-    const time = new Date()
-    response.send(`<p>Phonebook has infor for ${persons.length} people</p><p>${time}</p>`)
-    
+app.get('/api/info', (request, response, next) => {
+  const time = new Date()
+  response.send(`<p>Phonebook has infor for ${persons.length} people</p><p>${time}</p>`)
+
 })
 
 app.post('/api/persons', (request, response, next) => {
@@ -88,8 +88,8 @@ app.post('/api/persons', (request, response, next) => {
     number: request.body.number
   })
   newPerson.save()
-    .then(result => { 
-      console.log("add new person: ", result);
+    .then(result => {
+      console.log('add new person: ', result)
       response.json(result)
     })
     .catch(error => {
@@ -115,9 +115,9 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.delete('/api/persons/:id', (request, response, next) => {
   const id = String(request.params.id)
   Person.findByIdAndDelete(id)
-    .then(result => { 
+    .then(result => {
       response.status(204).send({
-        message: "Successfully deleted"
+        message: 'Successfully deleted'
       })
     })
     .catch(error => next(error))
@@ -142,5 +142,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
