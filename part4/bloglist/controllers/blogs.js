@@ -11,12 +11,39 @@ blogsRouter.get('/', (request, response, next) => {
 })
 
 blogsRouter.post('/', (request, response, next) => {
-  const blog = new Blog(request.body)
+  const body = request.body
+  const blog = new Blog(body)
+
+  if (!Object.prototype.hasOwnProperty.call(body, "likes")) {
+    blog.likes = 0
+  } else if (body.title === undefined || body.url === undefined) {
+    return response.status(400).json({ error: 'title or url missing' })
+  }
 
   blog
-    .save()
+      .save()
+      .then(result => {
+        response.status(200).json(result)
+      })
+      .catch(error => next(error))
+})
+
+blogsRouter.delete('/:id', (request, response, next) => {
+  Blog
+    .findByIdAndDelete(request.params.id)
     .then(result => {
-      response.status(201).json(result)
+      console.log("result: ", result)
+      response.status(204).end()
+    })
+    .catch(error => next(error))
+})
+
+blogsRouter.put('/:id', (request, response, next) => {
+  const body = request.body
+  Blog
+    .findByIdAndUpdate(request.params.id, body, { new: true })
+    .then(updatedBlog => {
+      response.status(200).json(updatedBlog)
     })
     .catch(error => next(error))
 })
