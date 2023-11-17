@@ -1,6 +1,15 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 
 blogsRouter.get('/', (request, response, next) => {
   Blog
@@ -12,32 +21,15 @@ blogsRouter.get('/', (request, response, next) => {
   .catch(error => next(error))
 })
 
-// blogsRouter.post('/', (request, response, next) => {
-//   const body = request.body
-//   const blog = new Blog(body)
-
-//   if (!Object.prototype.hasOwnProperty.call(body, "likes")) {
-//     blog.likes = 0
-//   } else if (body.title === undefined || body.url === undefined) {
-//     return response.status(400).json({ error: 'title or url missing' })
-//   }
-
-//   blog
-//       .save()
-//       .then(result => {
-//         response.status(200).json(result)
-//       })
-//       .catch(error => next(error))
-// })
-
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
 
-  // Check if the username exist
-  const existingUser = await User.findOne({ username: body.username })
-  if (!existingUser) {
-    return response.status(400).json({error: 'No user found'})
+  // Check user from the token
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id){
+    return response.status(401).json({error: 'token missing or invalid'})
   }
+  const user = await User.findById(decodedToken.id)
 
   // Create a new blog with user data
   const blog = new Blog({
@@ -45,14 +37,14 @@ blogsRouter.post('/', async (request, response, next) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
-    user: existingUser._id
+    user: user._id
   })
 
   const savedBlog = await blog.save()
 
-  existingUser.blogs = existingUser.blogs.concat(savedBlog)
+  user.blogs = user.blogs.concat(savedBlog)
 
-  await existingUser.save()
+  await user.save()
 
   response.status(200).json(savedBlog)
 })
