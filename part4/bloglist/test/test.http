@@ -1,13 +1,59 @@
 GET http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyaSIsImlkIjoiNjU1NTczMDBiZWNjYjY1MjIxMTIzOTYwIiwiaWF0IjoxNzAwMjUyMjk3fQ.rC3kx6jdUlkKjgvtmlqg792mc29SxbjqqsB3f9MbuBo
+
+###
+
+GET http://localhost:3003/api/users HTTP/1.1
+
+###
+
+POST http://localhost:3003/api/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "tri",
+  "password": "1234567"
+}
+
+###
+
+POST http://localhost:3003/api/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "tri",
+  "password": "1234567"
+}
+
+###
+
+DELETE http://localhost:3003/api/blogs/6557bc95336937c65f51039c HTTP/1.1
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyaSIsImlkIjoiNjU1NTczMDBiZWNjYjY1MjIxMTIzOTYwIiwiaWF0IjoxNzAwMjQ2NDg3fQ.5b3hjfsT9DlpPcQrYfoP54G5WIJuNfyZuymWgkHpD6A
 
 ###
 
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyaSIsImlkIjoiNjU1NTczMDBiZWNjYjY1MjIxMTIzOTYwIiwiaWF0IjoxNzAwMjQ2NDg3fQ.5b3hjfsT9DlpPcQrYfoP54G5WIJuNfyZuymWgkHpD6A
 
 {
-  "title": "Title_Blog",
-  "author": "Author_Blog",
-  "url": "www.blog.com",
-  "likes": 99
+  "title": "Title_Blog 1",
+  "author": "Author_Blog 1",
+  "url": "www.blog1.com",
+  "likes": 1
+}
+
+###
+
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyaSIsImlkIjoiNjU1NTczMDBiZWNjYjY1MjIxMTIzOTYwIiwiaWF0IjoxNzAwMjQ2NDg3fQ.5b3hjfsT9DlpPcQrYfoP54G5WIJuNfyZuymWgkHpD6A
+
+{
+  "title": "Title_Blog 2",
+  "author": "Author_Blog 2",
+  "url": "www.blog2.com",
+  "likes": 2
 }
