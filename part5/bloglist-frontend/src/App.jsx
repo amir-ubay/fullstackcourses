@@ -3,6 +3,7 @@ import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 // Updated Answers Task
 import LoginForm from "./components/LoginForm";
+import NewBlogForm from "./components/NewBlogForm";
 import authService from "./services/auth";
 
 const App = () => {
@@ -33,7 +34,14 @@ const App = () => {
     setUser(null);
   }
 
+  const handleSubmitBlog = async (blog) => {
+    blogService.create(blog).then((newBlog) => {
+      setBlogs((blogs) => blogs.concat(newBlog));
+    })
+  }
+
   useEffect(() => {
+    console.log('I am use effect: ', new Date())
     if(user) {
       blogService.getAll().then((blogs) => {
         setBlogs(blogs);
@@ -60,6 +68,7 @@ const App = () => {
           setPassword={setPassword}
         />
       )}
+      {user && <NewBlogForm addBlog={(blog) => handleSubmitBlog(blog)}/>}
       {user && <BlogQuery blogs={blogs} />}
     </div>
   );
