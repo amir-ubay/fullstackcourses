@@ -22,24 +22,23 @@ const App = () => {
       window.localStorage.setItem("user", JSON.stringify(user));
 
       setUser(user);
+      blogService.setToken(user.token);
     } catch (exception) {
       console.log("exception handle login: ", exception);
     }
   };
 
-  useEffect(() => {
-    const loggedInUser = window.localStorage.getItem("user");
-    if (loggedInUser) {
-      const user = JSON.parse(loggedInUser);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
-  }, []);
+  const handleLogout = async () => {
+    window.localStorage.removeItem("user");
+    setUser(null);
+  }
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      setBlogs(blogs);
-    });
+    if(user) {
+      blogService.getAll().then((blogs) => {
+        setBlogs(blogs);
+      });
+    }
   }, [user]);
 
   return (
@@ -48,7 +47,7 @@ const App = () => {
       {user && (
         <>
           <p>
-            {user.name} logged in <button>logout</button>
+            {user.name} logged in <button onClick={handleLogout}>logout</button>
           </p>
         </>
       )}
