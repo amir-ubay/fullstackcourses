@@ -4,7 +4,9 @@ import blogService from "./services/blogs";
 // Updated Answers Task
 import LoginForm from "./components/LoginForm";
 import NewBlogForm from "./components/NewBlogForm";
+import {Success, Error} from "./components/Notifications";
 import authService from "./services/auth";
+import './App.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -12,6 +14,7 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState({type: null, message: null});
 
   // Event Handler
   const handleLogin = async (event) => {
@@ -26,6 +29,14 @@ const App = () => {
       blogService.setToken(user.token);
     } catch (exception) {
       console.log("exception handle login: ", exception);
+      setNotification({
+        type: "error",
+        message: "Wrong username or password",
+      })
+
+      setTimeout(() => {
+        setNotification({type: null, message: null});
+      }, 5000)
     }
   };
 
@@ -35,9 +46,17 @@ const App = () => {
   }
 
   const handleSubmitBlog = async (blog) => {
-    blogService.create(blog).then((newBlog) => {
-      setBlogs((blogs) => blogs.concat(newBlog));
-    })
+    blogService.create(blog)
+      .then((newBlog) => {
+        setBlogs((blogs) => blogs.concat(newBlog));
+        setNotification({
+          type: "success-add-blog",
+          message: `A new blog ${newBlog.title} by ${newBlog.author} added`,
+        })
+        setTimeout(() => {
+          setNotification({type: null, message: null});
+        }, 5000)
+      })
   }
 
   useEffect(() => {
@@ -52,6 +71,12 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      {notification.type == "error" && (
+        <Error message={notification.message} />
+      )}
+      {notification.type == "success-add-blog" && (
+        <Success message={notification.message} />
+      )}
       {user && (
         <>
           <p>
