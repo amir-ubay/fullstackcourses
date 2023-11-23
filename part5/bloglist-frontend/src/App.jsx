@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
+import {Blog, BlogQuery} from "./components/Blog";
 import blogService from "./services/blogs";
 // Updated Answers Task
 import LoginForm from "./components/LoginForm";
@@ -7,6 +7,7 @@ import NewBlogForm from "./components/NewBlogForm";
 import {Success, Error} from "./components/Notifications";
 import authService from "./services/auth";
 import './App.css'
+import Toggleable from "./components/Toggleable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -48,7 +49,9 @@ const App = () => {
   const handleSubmitBlog = async (blog) => {
     blogService.create(blog)
       .then((newBlog) => {
-        setBlogs((blogs) => blogs.concat(newBlog));
+        blogService.getAll().then((blogs) => {
+          setBlogs(blogs);
+        });
         setNotification({
           type: "success-add-blog",
           message: `A new blog ${newBlog.title} by ${newBlog.author} added`,
@@ -60,13 +63,31 @@ const App = () => {
   }
 
   useEffect(() => {
-    console.log('I am use effect: ', new Date())
+    if(localStorage.getItem("user")) {
+      setUser(JSON.parse(localStorage.getItem("user")));
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('I am use effect get blog: ', new Date())
     if(user) {
+      blogService.setToken(user.token);
       blogService.getAll().then((blogs) => {
         setBlogs(blogs);
       });
     }
   }, [user]);
+
+  const handleLike = async (blog) => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1
+    }
+    blogService.addLike(updatedBlog)
+    blogService.getAll().then((blogs) => {
+      setBlogs(blogs);
+    });
+  }
 
   return (
     <div>
@@ -93,18 +114,12 @@ const App = () => {
           setPassword={setPassword}
         />
       )}
-      {user && <NewBlogForm addBlog={(blog) => handleSubmitBlog(blog)}/>}
-      {user && <BlogQuery blogs={blogs} />}
-    </div>
-  );
-};
-
-const BlogQuery = ({ blogs }) => {
-  return (
-    <div>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      {user && (
+        <Toggleable buttonLabel="new blog">
+          <NewBlogForm addBlog={(blog) => handleSubmitBlog(blog)}/>
+        </Toggleable>
+      )}
+      {user && <BlogQuery blogs={blogs} handleLike={handleLike}/>}
     </div>
   );
 };
