@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, handleRemove }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -33,6 +33,9 @@ const Blog = ({ blog, handleLike }) => {
         <p>
           {blog.user.name}
         </p>
+        <div>
+          <button onClick={() => {handleRemove(blog)}}>Remove</button>
+        </div>
       </div>
     )}    
   </div>  
@@ -40,7 +43,7 @@ const Blog = ({ blog, handleLike }) => {
 }
  
 
-const BlogQuery = ({ blogs, handleLike }) => {
+const BlogQuery = ({ blogs, handleLike, handleRemove }) => {
   const queryStyle = {
     paddingTop : '8px',
   }
@@ -51,7 +54,7 @@ const BlogQuery = ({ blogs, handleLike }) => {
   return (
     <div style={queryStyle}>
       {sortedBlog.map((blog) => (
-        <Blog key={blog.id} blog={blog} handleLike={handleLike}/>
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemove={handleRemove}/>
       ))}
     </div>
   );

@@ -69,7 +69,6 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    console.log('I am use effect get blog: ', new Date())
     if(user) {
       blogService.setToken(user.token);
       blogService.getAll().then((blogs) => {
@@ -87,6 +86,16 @@ const App = () => {
     blogService.getAll().then((blogs) => {
       setBlogs(blogs);
     });
+  }
+
+  const handleRemove = async (blog) => {
+    blogService.remove(blog)
+      .then((response) =>
+        {console.log("Response after deletion success: ", response)
+        blogService.getAll().then((blogs) => {
+          setBlogs(blogs);
+        })}
+      )
   }
 
   return (
@@ -119,7 +128,7 @@ const App = () => {
           <NewBlogForm addBlog={(blog) => handleSubmitBlog(blog)}/>
         </Toggleable>
       )}
-      {user && <BlogQuery blogs={blogs} handleLike={handleLike}/>}
+      {user && <BlogQuery blogs={blogs} handleLike={handleLike} handleRemove={handleRemove}/>}
     </div>
   );
 };

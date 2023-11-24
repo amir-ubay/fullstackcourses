@@ -12,7 +12,6 @@ const getAll = async () => {
   }
 
   const request = await axios.get(baseUrl, config)
-  console.log('request: ', request)
   return request.data
 }
 
@@ -22,7 +21,15 @@ const addLike = async (blog) => {
   }
 
   const request = await axios.put(`${baseUrl}/${blog.id}`, blog, config)
-  console.log("Add like success")
+  return request.data
+}
+
+const remove = async (blog) => {
+  const config = {
+    headers : { "authorization" : token}
+  }
+
+  const request = await axios.delete(`${baseUrl}/${blog.id}`, config)
   return request.data
 }
 
@@ -32,8 +39,7 @@ const create = async (blog) => {
   }
   
   const request = await axios.post(baseUrl, blog, config)
-  console.log('request data: ', request.data)
   return request.data
 }
 
-export default { getAll, setToken , create, addLike}
+export default { getAll, setToken , create, addLike, remove}
