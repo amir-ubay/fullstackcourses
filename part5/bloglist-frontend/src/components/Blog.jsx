@@ -1,63 +1,56 @@
-import { useState } from "react";
-
-const Blog = ({ blog, handleLike, handleRemove }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
-  const [visible, setVisible] = useState(false)
-
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
-
-  return(
-    <div style={blogStyle}>
-    {blog.title} {blog.author}
-    {visible ? 
-      <button onClick={toggleVisibility}>Hide</button> : 
-      <button onClick={toggleVisibility}>View</button>
-    }
-    {visible && (
-      <div>
-        <p>
-          {blog.url}
-        </p>
-        <p>
-          likes {blog.likes} <button onClick={() => handleLike(blog)}>like</button>
-        </p>
-        <p>
-          {blog.user.name}
-        </p>
-        <div>
-          <button onClick={() => {handleRemove(blog)}}>Remove</button>
-        </div>
-      </div>
-    )}    
-  </div>  
-  )
-}
- 
+import React, { useState } from 'react';
+import PropTypes from 'prop-types'
 
 const BlogQuery = ({ blogs, handleLike, handleRemove }) => {
   const queryStyle = {
     paddingTop : '8px',
   }
 
-  const sortedBlog = blogs.sort((b, a) => a.likes - b.likes)
+  const [visibleBlogId, setVisibleBlogId] = useState(null);
 
+  const toggleVisibility = (blogId) => {
+    if (visibleBlogId === blogId) {
+      setVisibleBlogId(null);
+    } else {
+      setVisibleBlogId(blogId);
+    }
+  }
+
+  const sortedBlogs = blogs.sort((b, a) => a.likes - b.likes);
 
   return (
     <div style={queryStyle}>
-      {sortedBlog.map((blog) => (
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleRemove={handleRemove}/>
+      {sortedBlogs.map((blog) => (
+        <div key={blog.id} style={{ paddingTop: 10, paddingLeft: 2, border: 'solid', borderWidth: 1, marginBottom: 5 }}>
+          {blog.title} {blog.author}
+          {visibleBlogId === blog.id ? (
+            <>
+              <button onClick={() => toggleVisibility(blog.id)}>Hide</button>
+              <div>
+                <p>{blog.url}</p>
+                <p>
+                  likes {blog.likes} <button onClick={() => handleLike(blog)}>like</button>
+                </p>
+                <p>{blog.user.name}</p>
+                <div>
+                  <button onClick={() => {handleRemove(blog)}}>Remove</button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <button onClick={() => toggleVisibility(blog.id)}>View</button>
+          )}
+        </div>
       ))}
     </div>
   );
 };
 
-export{ Blog, BlogQuery }
+BlogQuery.propTypes = {
+  blogs: PropTypes.array.isRequired,
+  handleLike: PropTypes.func.isRequired,
+  handleRemove: PropTypes.func.isRequired
+}
+
+
+export default BlogQuery;

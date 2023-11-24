@@ -1,5 +1,6 @@
-export const Success = ({message}) => {
+import PropTypes from 'prop-types';
 
+export const Success = ({message}) => {
     return (
         <div id="notification" className="success">
             <p>{message}</p>
@@ -7,11 +8,19 @@ export const Success = ({message}) => {
     )
 }
 
-export const Error = ({message}) => {
+Success.propTypes = {
+    message: PropTypes.string.isRequired
+}
 
+
+export const Error = ({message}) => {
     return (
         <div id="notification" className="error">
             <p>{message}</p>
         </div>
     )
+}
+
+Error.propTypes = {
+    message: PropTypes.string.isRequired
 }

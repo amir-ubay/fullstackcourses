@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {Blog, BlogQuery} from "./components/Blog";
+import BlogQuery from "./components/Blog";
 import blogService from "./services/blogs";
 // Updated Answers Task
 import LoginForm from "./components/LoginForm";
