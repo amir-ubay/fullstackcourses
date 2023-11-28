@@ -16,6 +16,7 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState({type: null, message: null});
+  const [newFormView, setNewFormView] = useState(false);
 
   // Event Handler
   const handleLogin = async (event) => {
@@ -46,11 +47,16 @@ const App = () => {
     setUser(null);
   }
 
+  const toggleVisibility = () => {
+    setNewFormView(!newFormView);
+  }
+
   const handleSubmitBlog = async (blog) => {
     blogService.create(blog)
       .then((newBlog) => {
         blogService.getAll().then((blogs) => {
           setBlogs(blogs);
+          setNewFormView(false);
         });
         setNotification({
           type: "success-add-blog",
@@ -124,7 +130,7 @@ const App = () => {
         />
       )}
       {user && (
-        <Toggleable buttonLabel="new blog">
+        <Toggleable buttonLabel="new blog" visible={newFormView} toggleVisibility={toggleVisibility}>
           <NewBlogForm addBlog={(blog) => handleSubmitBlog(blog)}/>
         </Toggleable>
       )}

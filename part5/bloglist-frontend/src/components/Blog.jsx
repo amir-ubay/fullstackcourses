@@ -22,6 +22,8 @@ const BlogQuery = ({ blogs, handleLike, handleRemove }) => {
     <div style={queryStyle}>
       {sortedBlogs.map((blog) => (
         <div
+          className="blogItem"
+          blog-data={blog.title}
           key={blog.id}
           style={{
             paddingTop: 10,

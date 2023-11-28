@@ -29,8 +29,13 @@ const remove = async (blog) => {
     headers : { "authorization" : token}
   }
 
-  const request = await axios.delete(`${baseUrl}/${blog.id}`, config)
-  return request.data
+  try {
+    const request = await axios.delete(`${baseUrl}/${blog.id}`, config);
+    return request.data;
+  } catch (error) {
+    // Handle the exception here
+    console.error("An error occurred during deletion:", error);
+  }
 }
 
 const create = async (blog) => {
