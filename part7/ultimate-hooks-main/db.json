@@ -1,10 +1,67 @@
 {
   "notes": [
-    { "id": 1, "content": "custom-hooks are awesome!" },
-    { "id": 2, "content": "best feature ever <3" }
+    {
+      "id": 1,
+      "content": "custom-hooks are awesome!"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "Finally the power of custom hook is in my had",
+      "id": 3
+    },
+    {
+      "content": "You have the power now",
+      "id": 4
+    },
+    {
+      "content": "check auto clean input",
+      "id": 5
+    },
+    {
+      "content": "You will clean",
+      "id": 6
+    },
+    {
+      "content": "You will clean",
+      "id": 7
+    },
+    {
+      "content": "You will clean",
+      "id": 8
+    },
+    {
+      "content": "Great and well done",
+      "id": 9
+    }
   ],
   "persons": [
-    { "id": 1, "name": "mluukkai", "number": "040-5483923" },
-    { "id": 2, "name": "hellas", "number": "012-123123" }
+    {
+      "id": 1,
+      "name": "mluukkai",
+      "number": "040-5483923"
+    },
+    {
+      "id": 2,
+      "name": "hellas",
+      "number": "012-123123"
+    },
+    {
+      "name": "Marxus",
+      "number": "911-0231",
+      "id": 3
+    },
+    {
+      "name": "Marxus",
+      "number": "911-0231",
+      "id": 4
+    },
+    {
+      "name": "Naokamio",
+      "number": "2132-1234-123132",
+      "id": 5
+    }
   ]
 }
