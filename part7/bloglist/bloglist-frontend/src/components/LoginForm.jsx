@@ -1,12 +1,35 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser, setLogin, setLogout, selectUser } from '../redux/userSlice';
+import authService from '../services/auth';
+import blogService from '../services/blogs';
+import {
+  showNotification,
+  selectNotification,
+} from '../redux/notificationSlice';
 
-const LoginForm = ({
-  username,
-  password,
-  handleLogin,
-  setUsername,
-  setPassword,
-}) => {
+const LoginForm = () => {
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const notification = useSelector(selectNotification);
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
+    try {
+      const loginResult = await authService.login(user.username, user.password);
+      window.localStorage.setItem('user', JSON.stringify(loginResult));
+
+      dispatch(setLogin({ token: loginResult.token }));
+      blogService.setToken(loginResult.token);
+    } catch (exception) {
+      console.log('exception handle login: ', exception);
+      dispatch(showNotification('error', 'wrong username or password'));
+    } finally {
+    }
+  };
+
   return (
     <div id="login-form">
       <h2>Log in to application</h2>
@@ -16,9 +39,11 @@ const LoginForm = ({
           <input
             id="username"
             type="text"
-            value={username}
+            value={user.username}
             name="Username"
-            onChange={({ target }) => setUsername(target.value)}
+            onChange={({ target }) =>
+              dispatch(setUser({ ...user, username: target.value }))
+            }
           />
         </div>
         <div id="password-input">
@@ -26,9 +51,11 @@ const LoginForm = ({
           <input
             id="password"
             type="password"
-            value={password}
+            value={user.password}
             name="Password"
-            onChange={({ target }) => setPassword(target.value)}
+            onChange={({ target }) =>
+              dispatch(setUser({ ...user, password: target.value }))
+            }
           />
         </div>
         <button id="login-button" type="submit">
@@ -37,14 +64,6 @@ const LoginForm = ({
       </form>
     </div>
   );
-};
-
-LoginForm.propTypes = {
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
-  handleLogin: PropTypes.func.isRequired,
-  setUsername: PropTypes.func.isRequired,
-  setPassword: PropTypes.func.isRequired,
 };
 
 export default LoginForm;

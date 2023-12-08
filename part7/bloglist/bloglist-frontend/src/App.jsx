@@ -1,55 +1,30 @@
-import { useState, useEffect } from "react";
-import BlogQuery from "./components/Blog";
-import blogService from "./services/blogs";
+import { useState, useEffect } from 'react';
+import BlogQuery from './components/Blog';
+import blogService from './services/blogs';
 // Updated Answers Task
-import LoginForm from "./components/LoginForm";
-import NewBlogForm from "./components/NewBlogForm";
-import { Success, Error } from "./components/Notifications";
-import authService from "./services/auth";
-import "./App.css";
-import Toggleable from "./components/Toggleable";
+import LoginForm from './components/LoginForm';
+import NewBlogForm from './components/NewBlogForm';
+import { Success, Error } from './components/Notifications';
+import './App.css';
+import Toggleable from './components/Toggleable';
+import RegisterForm from './components/RegisterForm';
+import { setUser, setLogin, selectUser } from './redux/userSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import Logout from './components/Logout';
+import { selectNotification } from './redux/notificationSlice';
+import { selectBlogs, initializeBlog } from './redux/blogSlice';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const user = useSelector(selectUser);
+  const notification = useSelector(selectNotification);
+  const blogs = useSelector(selectBlogs);
+
+  const dispatch = useDispatch();
+
   // Updated Answers Task
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState({
-    type: null,
-    message: null,
-  });
   const [newFormView, setNewFormView] = useState(false);
 
   // Event Handler
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    console.log("logging in with", username, "-", password);
-
-    try {
-      const user = await authService.login(username, password);
-      window.localStorage.setItem("user", JSON.stringify(user));
-
-      setUser(user);
-      blogService.setToken(user.token);
-    } catch (exception) {
-      console.log("exception handle login: ", exception);
-      setNotification({
-        type: "error",
-        message: "Wrong username or password",
-      });
-
-      setTimeout(() => {
-        setNotification({ type: null, message: null });
-      }, 5000);
-    }
-  };
-
-  const handleLogout = async () => {
-    window.localStorage.removeItem("user");
-    setUser(null);
-  };
-
   const toggleVisibility = () => {
     setNewFormView(!newFormView);
   };
@@ -61,7 +36,7 @@ const App = () => {
         setNewFormView(false);
       });
       setNotification({
-        type: "success-add-blog",
+        type: 'success-add-blog',
         message: `A new blog ${newBlog.title} by ${newBlog.author} added`,
       });
       setTimeout(() => {
@@ -71,17 +46,17 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("user")) {
-      setUser(JSON.parse(localStorage.getItem("user")));
+    if (localStorage.getItem('user')) {
+      const data = JSON.parse(localStorage.getItem('user'));
+      dispatch(setUser({ username: data.username }));
+      dispatch(setLogin({ token: data.token }));
     }
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (user.isLogin) {
       blogService.setToken(user.token);
-      blogService.getAll().then((blogs) => {
-        setBlogs(blogs);
-      });
+      dispatch(initializeBlog());
     }
   }, [user]);
 
@@ -98,7 +73,7 @@ const App = () => {
 
   const handleRemove = async (blog) => {
     blogService.remove(blog).then((response) => {
-      console.log("Response after deletion success: ", response);
+      console.log('Response after deletion success: ', response);
       blogService.getAll().then((blogs) => {
         setBlogs(blogs);
       });
@@ -108,27 +83,20 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      {notification.type == "error" && <Error message={notification.message} />}
-      {notification.type == "success-add-blog" && (
+      {notification.type == 'error' && <Error message={notification.message} />}
+      {notification.type == 'success-add-blog' && (
         <Success message={notification.message} />
       )}
-      {user && (
+      {user.isLogin && <></>}
+      {!user.isLogin ? (
         <>
-          <p>
-            {user.name} logged in <button onClick={handleLogout}>logout</button>
-          </p>
+          <LoginForm />
+          <RegisterForm />
         </>
+      ) : (
+        <Logout />
       )}
-      {!user && (
-        <LoginForm
-          username={username}
-          password={password}
-          handleLogin={handleLogin}
-          setUsername={setUsername}
-          setPassword={setPassword}
-        />
-      )}
-      {user && (
+      {user.isLogin && (
         <Toggleable
           buttonLabel="new blog"
           visible={newFormView}
@@ -137,13 +105,7 @@ const App = () => {
           <NewBlogForm addBlog={(blog) => handleSubmitBlog(blog)} />
         </Toggleable>
       )}
-      {user && (
-        <BlogQuery
-          blogs={blogs}
-          handleLike={handleLike}
-          handleRemove={handleRemove}
-        />
-      )}
+      {user.isLogin && <BlogQuery />}
     </div>
   );
 };

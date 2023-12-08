@@ -1,9 +1,13 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { selectBlogs } from '../redux/blogSlice';
+import { useSelector } from 'react-redux';
 
-const BlogQuery = ({ blogs, handleLike, handleRemove }) => {
+const BlogQuery = () => {
+  const blogs = useSelector(selectBlogs);
+
   const queryStyle = {
-    paddingTop: "8px",
+    paddingTop: '8px',
   };
 
   const [visibleBlogId, setVisibleBlogId] = useState(null);
@@ -17,6 +21,7 @@ const BlogQuery = ({ blogs, handleLike, handleRemove }) => {
   };
 
   const sortedBlogs = blogs.sort((b, a) => a.likes - b.likes);
+  console.log('sortedBlogs > ', sortedBlogs);
 
   return (
     <div style={queryStyle}>
@@ -28,13 +33,13 @@ const BlogQuery = ({ blogs, handleLike, handleRemove }) => {
           style={{
             paddingTop: 10,
             paddingLeft: 2,
-            border: "solid",
+            border: 'solid',
             borderWidth: 1,
             marginBottom: 5,
           }}
         >
           <span test-data="blog-title" id="title">
-            {blog.title}{" "}
+            {blog.title}{' '}
           </span>
           <span test-data="blog-author" id="author">
             {blog.author}
@@ -47,10 +52,10 @@ const BlogQuery = ({ blogs, handleLike, handleRemove }) => {
                   {blog.url}
                 </p>
                 <p>
-                  likes{" "}
+                  likes{' '}
                   <span test-data="blog-likes" id="likes">
                     {blog.likes}
-                  </span>{" "}
+                  </span>{' '}
                   <button onClick={() => handleLike(blog)}>like</button>
                 </p>
                 <p test-data="blog-username">{blog.user.name}</p>
