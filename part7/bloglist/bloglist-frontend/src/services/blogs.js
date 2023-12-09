@@ -7,11 +7,19 @@ const setToken = (newToken) => {
 };
 
 const getAll = async () => {
-  const config = {
-    headers: { authorization: token },
-  };
-  const request = await axios.get(baseUrl, config);
-  return request.data;
+  try {
+    const config = {
+      headers: { authorization: token },
+    };
+  
+    const request = await axios.get(baseUrl, config);
+    return request.data;
+  } catch (error) {
+    // Handle the exception here
+    console.error('An error occurred:', error);
+    // You can also throw the error to propagate it to the caller
+    throw error;
+  }
 };
 
 const addLike = async (blog) => {

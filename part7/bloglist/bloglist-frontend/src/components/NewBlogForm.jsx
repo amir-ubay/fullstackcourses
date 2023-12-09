@@ -1,17 +1,35 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
+import { selectBlogs, createBlog } from "../redux/blogSlice";
+import { showNotification, selectNotification } from "../redux/notificationSlice";
 
-const NewBlogForm = ({ addBlog }) => {
+const NewBlogForm = ({toggleVisibility}) => {
+  const dispatch = useDispatch();
+  const blogs = useSelector(selectBlogs);
+  const notification = useSelector(selectNotification);
+
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const handleSubmitBlog = (event) => {
-    event.preventDefault();
-    addBlog({ title, author, url });
+  const resetForm = () => {
     setTitle("");
     setAuthor("");
     setUrl("");
+  }
+
+  const handleSubmitBlog = (event) => {
+    event.preventDefault();
+    const newBlogData = {
+      title,
+      author,
+      url,
+    }
+    resetForm()
+    dispatch(createBlog(newBlogData))
+    dispatch(showNotification('success', `a new blog ${title} by ${author} added`))
+    toggleVisibility()
   };
 
   return (
@@ -56,10 +74,6 @@ const NewBlogForm = ({ addBlog }) => {
       </div>
     </>
   );
-};
-
-NewBlogForm.propTypes = {
-  addBlog: PropTypes.func.isRequired,
 };
 
 export default NewBlogForm;

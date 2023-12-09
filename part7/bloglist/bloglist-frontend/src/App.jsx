@@ -34,22 +34,6 @@ const App = () => {
     setNewFormView(!newFormView);
   };
 
-  const handleSubmitBlog = async (blog) => {
-    blogService.create(blog).then((newBlog) => {
-      blogService.getAll().then((blogs) => {
-        setBlogs(blogs);
-        setNewFormView(false);
-      });
-      setNotification({
-        type: 'success-add-blog',
-        message: `A new blog ${newBlog.title} by ${newBlog.author} added`,
-      });
-      setTimeout(() => {
-        setNotification({ type: null, message: null });
-      }, 5000);
-    });
-  };
-
   useEffect(() => {
     if (localStorage.getItem('user')) {
       const data = JSON.parse(localStorage.getItem('user'));
@@ -63,7 +47,7 @@ const App = () => {
       blogService.setToken(user.token);
       dispatch(initializeBlog());
     }
-  }, [user]);
+  }, [user.isLogin]);
 
   const handleLike = async (blog) => {
     const updatedBlog = {
@@ -101,7 +85,7 @@ const App = () => {
       </Router>
       <h2>blogs</h2>
       {notification.type == 'error' && <Error message={notification.message} />}
-      {notification.type == 'success-add-blog' && (
+      {notification.type == 'success' && (
         <Success message={notification.message} />
       )}
       {user.isLogin && <></>}
@@ -119,7 +103,7 @@ const App = () => {
           visible={newFormView}
           toggleVisibility={toggleVisibility}
         >
-          <NewBlogForm addBlog={(blog) => handleSubmitBlog(blog)} />
+          <NewBlogForm toggleVisibility={toggleVisibility}/>
         </Toggleable>
       )}
       {/* {user.isLogin && <BlogQuery />} */}
