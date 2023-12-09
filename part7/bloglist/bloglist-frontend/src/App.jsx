@@ -13,6 +13,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import Logout from './components/Logout';
 import { selectNotification } from './redux/notificationSlice';
 import { selectBlogs, initializeBlog } from './redux/blogSlice';
+// Start React Router
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Users from './components/Users';
+import User from './components/User';
+import TheBlog from './components/TheBlog';
 
 const App = () => {
   const user = useSelector(selectUser);
@@ -82,6 +87,18 @@ const App = () => {
 
   return (
     <div>
+      <Router>
+        <div id="menu">
+          <Link to="/users">Users</Link>
+          <Link to="/blogs">Blogs</Link>
+          <Routes>
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<User />} />
+            <Route path="/blogs" element={<BlogQuery />} />
+            <Route path="/blogs/:id" element={<TheBlog />} />
+          </Routes>
+        </div>
+      </Router>
       <h2>blogs</h2>
       {notification.type == 'error' && <Error message={notification.message} />}
       {notification.type == 'success-add-blog' && (
@@ -105,7 +122,8 @@ const App = () => {
           <NewBlogForm addBlog={(blog) => handleSubmitBlog(blog)} />
         </Toggleable>
       )}
-      {user.isLogin && <BlogQuery />}
+      {/* {user.isLogin && <BlogQuery />} */}
+      {/* {user.isLogin && <Users />} */}
     </div>
   );
 };
