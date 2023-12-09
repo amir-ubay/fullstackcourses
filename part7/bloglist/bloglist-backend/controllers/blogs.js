@@ -28,7 +28,8 @@ blogsRouter.post('/', async (request, response, next) => {
     author: body.author,
     url: body.url,
     likes: body.likes ? body.likes : 0,
-    user: user._id
+    user: user._id,
+    comments: []
   })
 
   const savedBlog = await blog.save()
@@ -70,13 +71,36 @@ blogsRouter.put('/:id', (request, response, next) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes ? body.likes : 0
+    likes: body.likes ? body.likes : 0,
+    comments: body.comments
   }
 
   Blog
     .findByIdAndUpdate(request.params.id, newBlog, { new: true })
     .then(updatedBlog => {
       response.status(200).json(updatedBlog)
+    })
+    .catch(error => next(error))
+})
+
+blogsRouter.put('/:id/comments', (request, response, next) => {
+  const comment = request.body.comment
+
+  Blog
+    .findById(request.params.id)
+    .then(blog => {
+      blog.comments = blog.comments.concat({text: comment})
+      blog.save()
+      return response.status(200).json(blog)
+    })
+  .catch(error => next(error))
+})
+
+blogsRouter.post('/update-schema', (request, response, next) => {
+  Blog
+    .updateMany({}, { $set: { comments: [] } })
+    .then(result => {
+      response.status(200).json(result)
     })
     .catch(error => next(error))
 })

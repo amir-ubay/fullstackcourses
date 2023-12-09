@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { selectBlogs, deleteBlog, initializeBlog, addLike } from '../redux/blogSlice';
+import {
+  selectBlogs,
+  deleteBlog,
+  initializeBlog,
+  addLike,
+} from '../redux/blogSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-
 const BlogQuery = () => {
   const blogs = useSelector(selectBlogs);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const queryStyle = {
     paddingTop: '8px',
@@ -23,27 +27,22 @@ const BlogQuery = () => {
     }
   };
 
-
   const handleRemove = (blog) => {
-    dispatch(deleteBlog(blog))
-  }
+    dispatch(deleteBlog(blog));
+  };
 
   const handleLike = (blog) => {
-    dispatch(addLike(blog))
-  }
+    dispatch(addLike(blog));
+  };
 
-  var sortedBlogs = [] 
+  var sortedBlogs = [];
 
   if (blogs) {
-    sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
+    sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
   }
-
-  console.log("sortedBlogs >", sortedBlogs)
-
 
   return (
     <div style={queryStyle}>
-      
       {sortedBlogs.map((blog) => (
         <div
           className="blogItem"

@@ -31,7 +31,6 @@ export const initializeBlog = () => {
   return async (dispatch) => {
     const blogs = await blogService.getAll()
     dispatch(setBlogs(blogs))
-    console.log("blogs >", blogs)
   }
 }
 
@@ -57,5 +56,14 @@ export const addLike = (blog) => {
     const response = await blogService.addLike(blog)
     dispatch(updateBlog(updatedBlog))
     console.log('like blog > ', response.data)
+  }
+}
+
+export const addComment = (blog, comment) => {
+  return async (dispatch) => {
+    const updatedBlog = { ...blog, comments: blog.comments.concat({text: comment}) }
+    const response = await blogService.comment(blog, comment)
+    dispatch(updateBlog(updatedBlog))
+    console.log('comment blog > ', response.data)
   }
 }

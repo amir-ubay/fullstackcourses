@@ -57,3 +57,18 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRya
   "url": "www.blog2.com",
   "likes": 2
 }
+
+###
+PUT http://localhost:3003/api/blogs/655f0e5b9b7c0623957d60aa/comments HTTP/1.1
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyaSIsImlkIjoiNjU1NTczMDBiZWNjYjY1MjIxMTIzOTYwIiwiaWF0IjoxNzAwMjQ2NDg3fQ.5b3hjfsT9DlpPcQrYfoP54G5WIJuNfyZuymWgkHpD6A
+
+{
+  "comment": "This is testing comment"
+}
+
+
+###
+POST http://localhost:3003/api/blogs/update-schema HTTP/1.1
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRyaSIsImlkIjoiNjU1NTczMDBiZWNjYjY1MjIxMTIzOTYwIiwiaWF0IjoxNzAwMjQ2NDg3fQ.5b3hjfsT9DlpPcQrYfoP54G5WIJuNfyZuymWgkHpD6A

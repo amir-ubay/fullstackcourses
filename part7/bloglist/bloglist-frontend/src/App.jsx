@@ -18,6 +18,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Users from './components/Users';
 import User from './components/User';
 import TheBlog from './components/TheBlog';
+import { initUserData } from './redux/userDataSlice';
 
 const App = () => {
   const user = useSelector(selectUser);
@@ -46,6 +47,7 @@ const App = () => {
     if (user.isLogin) {
       blogService.setToken(user.token);
       dispatch(initializeBlog());
+      dispatch(initUserData());
     }
   }, [user.isLogin]);
 
@@ -103,7 +105,7 @@ const App = () => {
           visible={newFormView}
           toggleVisibility={toggleVisibility}
         >
-          <NewBlogForm toggleVisibility={toggleVisibility}/>
+          <NewBlogForm toggleVisibility={toggleVisibility} />
         </Toggleable>
       )}
       {/* {user.isLogin && <BlogQuery />} */}

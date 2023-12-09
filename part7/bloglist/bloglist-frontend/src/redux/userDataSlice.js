@@ -19,7 +19,5 @@ export default userDataSlice.reducer
 export const initUserData = () => {
   return async (dispatch) => {
     const userData = await userService.getAll()
-    dispatch(setUserData(userData))
-    console.log("userData >", userData)
-  }
+    dispatch(setUserData(userData))  }
 }
