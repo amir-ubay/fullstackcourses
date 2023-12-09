@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { selectBlogs, deleteBlog, initializeBlog, addLike } from '../redux/blogSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 
 const BlogQuery = () => {
   const blogs = useSelector(selectBlogs);
@@ -21,6 +23,7 @@ const BlogQuery = () => {
     }
   };
 
+
   const handleRemove = (blog) => {
     dispatch(deleteBlog(blog))
   }
@@ -29,13 +32,14 @@ const BlogQuery = () => {
     dispatch(addLike(blog))
   }
 
-  var sortedBlogs = []
+  var sortedBlogs = [] 
 
   if (blogs) {
     sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
   }
 
   console.log("sortedBlogs >", sortedBlogs)
+
 
   return (
     <div style={queryStyle}>
@@ -53,12 +57,14 @@ const BlogQuery = () => {
             marginBottom: 5,
           }}
         >
-          <span test-data="blog-title" id="title">
-            {blog.title}{' '}
-          </span>
-          <span test-data="blog-author" id="author">
-            {blog.author}
-          </span>
+          <Link to={`/blogs/${blog.id}`}>
+            <span test-data="blog-title" id="title">
+              {blog.title}{' '}
+            </span>
+            <span test-data="blog-author" id="author">
+              {blog.author}
+            </span>
+          </Link>
           {visibleBlogId === blog.id ? (
             <>
               <button onClick={() => toggleVisibility(blog.id)}>Hide</button>
