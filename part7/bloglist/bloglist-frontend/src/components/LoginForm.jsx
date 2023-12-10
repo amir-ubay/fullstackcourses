@@ -8,6 +8,7 @@ import {
   showNotification,
   selectNotification,
 } from '../redux/notificationSlice';
+import { TextField, Button } from '@mui/material';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -30,13 +31,22 @@ const LoginForm = () => {
     }
   };
 
+  const loginForm = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+  };
+
   return (
-    <div id="login-form">
-      <h2>Log in to application</h2>
+    <div id="login-form" style={loginForm}>
+      <h3>Log in to application</h3>
       <form onSubmit={handleLogin}>
         <div id="username-input">
-          username
-          <input
+          <p>Username</p>
+          <TextField
             id="username"
             type="text"
             value={user.username}
@@ -46,9 +56,10 @@ const LoginForm = () => {
             }
           />
         </div>
-        <div id="password-input">
-          password
-          <input
+        <div id="password-input" style={{ margin: '10px 0px' }}>
+          <p>Password</p>
+          <TextField
+            variant="outlined"
             id="password"
             type="password"
             value={user.password}
@@ -58,9 +69,9 @@ const LoginForm = () => {
             }
           />
         </div>
-        <button id="login-button" type="submit">
+        <Button variant="contained" id="login-button" type="submit">
           login
-        </button>
+        </Button>
       </form>
     </div>
   );

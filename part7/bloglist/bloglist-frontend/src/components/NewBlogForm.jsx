@@ -1,23 +1,27 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { useSelector, useDispatch } from "react-redux";
-import { selectBlogs, createBlog } from "../redux/blogSlice";
-import { showNotification, selectNotification } from "../redux/notificationSlice";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectBlogs, createBlog } from '../redux/blogSlice';
+import {
+  showNotification,
+  selectNotification,
+} from '../redux/notificationSlice';
+import { Button, TextField } from '@mui/material';
 
-const NewBlogForm = ({toggleVisibility}) => {
+const NewBlogForm = ({ toggleVisibility }) => {
   const dispatch = useDispatch();
   const blogs = useSelector(selectBlogs);
   const notification = useSelector(selectNotification);
 
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   const resetForm = () => {
-    setTitle("");
-    setAuthor("");
-    setUrl("");
-  }
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  };
 
   const handleSubmitBlog = (event) => {
     event.preventDefault();
@@ -25,11 +29,13 @@ const NewBlogForm = ({toggleVisibility}) => {
       title,
       author,
       url,
-    }
-    resetForm()
-    dispatch(createBlog(newBlogData))
-    dispatch(showNotification('success', `a new blog ${title} by ${author} added`))
-    toggleVisibility()
+    };
+    resetForm();
+    dispatch(createBlog(newBlogData));
+    dispatch(
+      showNotification('success', `a new blog ${title} by ${author} added`)
+    );
+    toggleVisibility();
   };
 
   return (
@@ -37,8 +43,10 @@ const NewBlogForm = ({toggleVisibility}) => {
       <div id="new-blog-form">
         <form onSubmit={handleSubmitBlog}>
           <div>
-            title
-            <input
+            <p>Title</p>
+            <TextField
+              fullWidth
+              variant="outlined"
               id="title"
               type="text"
               value={title}
@@ -48,8 +56,9 @@ const NewBlogForm = ({toggleVisibility}) => {
             />
           </div>
           <div>
-            author
-            <input
+            <p>Autor</p>
+            <TextField
+              fullWidth
               id="author"
               type="text"
               value={author}
@@ -59,8 +68,9 @@ const NewBlogForm = ({toggleVisibility}) => {
             />
           </div>
           <div>
-            url
-            <input
+            <p>URL</p>
+            <TextField
+              fullWidth
               id="url"
               type="text"
               value={url}
@@ -69,7 +79,14 @@ const NewBlogForm = ({toggleVisibility}) => {
               onChange={({ target }) => setUrl(target.value)}
             />
           </div>
-          <button type="submit">create</button>
+          <Button
+            variant="contained"
+            size="small"
+            color="primary"
+            type="submit"
+          >
+            create
+          </Button>
         </form>
       </div>
     </>

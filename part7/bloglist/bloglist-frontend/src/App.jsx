@@ -19,6 +19,8 @@ import Users from './components/Users';
 import User from './components/User';
 import TheBlog from './components/TheBlog';
 import { initUserData } from './redux/userDataSlice';
+// CSS
+import { Container, Button } from '@mui/material';
 
 const App = () => {
   const user = useSelector(selectUser);
@@ -62,55 +64,52 @@ const App = () => {
     });
   };
 
-  const handleRemove = async (blog) => {
-    blogService.remove(blog).then((response) => {
-      console.log('Response after deletion success: ', response);
-      blogService.getAll().then((blogs) => {
-        setBlogs(blogs);
-      });
-    });
-  };
-
   return (
-    <div>
+    <Container>
       <Router>
-        <div id="menu">
-          <Link to="/users">Users</Link>
-          <Link to="/blogs">Blogs</Link>
+        <div className="main-content">
+          {user.isLogin && (
+            <div className="nav-container">
+              <Link to="/">Blogs</Link>
+              <Link to="/users">Users</Link>
+            </div>
+          )}
+          <div className="header">
+            <h1>Blogs App</h1>
+            {notification.type == 'error' && (
+              <Error message={notification.message} />
+            )}
+            {notification.type == 'success' && (
+              <Success message={notification.message} />
+            )}
+            {user.isLogin && <></>}
+            {!user.isLogin ? (
+              <>
+                <LoginForm />
+                {/* <RegisterForm /> */}
+              </>
+            ) : (
+              <Logout />
+            )}
+            {user.isLogin && (
+              <Toggleable
+                buttonLabel="new blog"
+                visible={newFormView}
+                toggleVisibility={toggleVisibility}
+              >
+                <NewBlogForm toggleVisibility={toggleVisibility} />
+              </Toggleable>
+            )}
+          </div>
           <Routes>
             <Route path="/users" element={<Users />} />
             <Route path="/users/:id" element={<User />} />
-            <Route path="/blogs" element={<BlogQuery />} />
+            <Route path="/" element={<BlogQuery />} />
             <Route path="/blogs/:id" element={<TheBlog />} />
           </Routes>
         </div>
       </Router>
-      <h2>blogs</h2>
-      {notification.type == 'error' && <Error message={notification.message} />}
-      {notification.type == 'success' && (
-        <Success message={notification.message} />
-      )}
-      {user.isLogin && <></>}
-      {!user.isLogin ? (
-        <>
-          <LoginForm />
-          <RegisterForm />
-        </>
-      ) : (
-        <Logout />
-      )}
-      {user.isLogin && (
-        <Toggleable
-          buttonLabel="new blog"
-          visible={newFormView}
-          toggleVisibility={toggleVisibility}
-        >
-          <NewBlogForm toggleVisibility={toggleVisibility} />
-        </Toggleable>
-      )}
-      {/* {user.isLogin && <BlogQuery />} */}
-      {/* {user.isLogin && <Users />} */}
-    </div>
+    </Container>
   );
 };
 

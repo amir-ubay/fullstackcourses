@@ -8,13 +8,28 @@ import {
 } from '../redux/blogSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+// UI Import
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Button,
+  Typography,
+} from '@mui/material';
 
 const BlogQuery = () => {
   const blogs = useSelector(selectBlogs);
   const dispatch = useDispatch();
 
   const queryStyle = {
-    paddingTop: '8px',
+    padding: '8px, 0px, 8px, 0px',
+    marginTop: '24px',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'left',
+    gap: '4px',
+    flexWrap: 'wrap',
+    allignContent: 'center',
   };
 
   const [visibleBlogId, setVisibleBlogId] = useState(null);
@@ -42,58 +57,47 @@ const BlogQuery = () => {
   }
 
   return (
-    <div style={queryStyle}>
+    <div style={queryStyle} class="blogContainer">
       {sortedBlogs.map((blog) => (
-        <div
-          className="blogItem"
-          blog-data={blog.title}
-          key={blog.id}
-          style={{
-            paddingTop: 10,
-            paddingLeft: 2,
-            border: 'solid',
-            borderWidth: 1,
-            marginBottom: 5,
-          }}
-        >
-          <Link to={`/blogs/${blog.id}`}>
-            <span test-data="blog-title" id="title">
-              {blog.title}{' '}
-            </span>
-            <span test-data="blog-author" id="author">
+        <Card sx={{ width: '32%' }}>
+          <CardContent>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
               {blog.author}
-            </span>
-          </Link>
-          {visibleBlogId === blog.id ? (
-            <>
-              <button onClick={() => toggleVisibility(blog.id)}>Hide</button>
-              <div>
-                <p test-data="blog-url" id="url">
-                  {blog.url}
-                </p>
-                <p>
-                  likes{' '}
-                  <span test-data="blog-likes" id="likes">
-                    {blog.likes}
-                  </span>{' '}
-                  <button onClick={() => handleLike(blog)}>like</button>
-                </p>
-                <p test-data="blog-username">{blog.user.name}</p>
-                <div>
-                  <button
-                    onClick={() => {
-                      handleRemove(blog);
-                    }}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </>
-          ) : (
-            <button onClick={() => toggleVisibility(blog.id)}>View</button>
-          )}
-        </div>
+            </Typography>
+            <Typography variant="h5" component="div">
+              {blog.title}
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              {blog.url}
+            </Typography>
+            <Typography variant="body2">
+              <p>
+                likes{' '}
+                <span test-data="blog-likes" id="likes">
+                  {blog.likes}
+                </span>{' '}
+                <button onClick={() => handleLike(blog)}>like</button>
+              </p>
+            </Typography>
+            <CardActions>
+              <Link to={`/blogs/${blog.id}`}>
+                <Button size="small">View</Button>
+              </Link>
+              <Button
+                size="small"
+                onClick={() => {
+                  handleRemove(blog);
+                }}
+              >
+                Remove
+              </Button>
+            </CardActions>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

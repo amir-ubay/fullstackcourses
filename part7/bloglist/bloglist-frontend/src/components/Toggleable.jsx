@@ -1,20 +1,36 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Button } from '@mui/material';
 
 const Toggleable = ({ children, buttonLabel, visible, toggleVisibility }) => {
-  const hideWhenVisible = { display: visible ? "none" : "" };
-  const showWhenVisible = { display: visible ? "" : "none" };
+  const hideWhenVisible = { display: visible ? 'none' : '' };
+  const showWhenVisible = { display: visible ? '' : 'none' };
 
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility} id={buttonLabel}>
+        <Button
+          variant="contained"
+          size="small"
+          color="primary"
+          onClick={toggleVisibility}
+          id={buttonLabel}
+        >
           {buttonLabel}
-        </button>
+        </Button>
       </div>
       <div style={showWhenVisible}>
         {children}
-        <button onClick={toggleVisibility}>cancel</button>
+        <div className="center">
+          <Button
+            variant="contained"
+            size="small"
+            color="error"
+            onClick={toggleVisibility}
+          >
+            cancel
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -27,7 +43,7 @@ Toggleable.propTypes = {
 };
 
 Toggleable.defaultProps = {
-  buttonLabel: "Toggle",
+  buttonLabel: 'Toggle',
   visible: false,
 };
 

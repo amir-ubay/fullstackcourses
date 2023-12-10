@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { selectUser, setLogout } from '../redux/userSlice';
+import { Button } from '@mui/material';
 
 const Logout = () => {
   const user = useSelector(selectUser);
@@ -12,9 +13,19 @@ const Logout = () => {
   };
 
   return (
-    <p>
-      {user.username} logged in <button onClick={handleLogout}>logout</button>
-    </p>
+    <div className="loginStatus">
+      <h3>
+        {user.username} logged in{' '}
+        <Button
+          variant="contained"
+          size="small"
+          color="error"
+          onClick={handleLogout}
+        >
+          logout
+        </Button>
+      </h3>
+    </div>
   );
 };
 
