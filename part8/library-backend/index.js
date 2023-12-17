@@ -1,5 +1,6 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
+const { GraphQLError } = require('graphql')
 
 let authors = [
   {
@@ -161,7 +162,8 @@ const resolvers = {
         return {
           name: author.name,
           id: author.id,
-          bookCount: bookCount
+          bookCount: bookCount,
+          born: author.born ? author.born : 0
         }
       })
       return data
@@ -194,13 +196,13 @@ const resolvers = {
       return books
     },
     editAuthor: (root, args) => {
-      const toEdit = authors.find(author => author.name === args.name)
+      const toEdit = authors.find(author => author.name.toLowerCase() === args.name.toLowerCase())
       if (toEdit) {
         toEdit.born = args.setBornTo
         console.log(authors)
         return authors
       } else {
-        return null
+        throw new GraphQLError('Author not found')
       }
     }
   }
