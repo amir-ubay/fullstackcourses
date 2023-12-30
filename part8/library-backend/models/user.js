@@ -11,10 +11,10 @@ const schema = new mongoose.Schema({
     required: true,
     minLength: 3,
   },
-  friends: [
+  favoriteGenre: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
+      minLength: 3,
     },
   ],
 });

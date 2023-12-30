@@ -116,7 +116,7 @@ const typeDefs = `
   type User {
     username: String!,
     id: ID!,
-    friends: [User!]!
+    favoriteGenre: [String!]!
   }
 
   type Token {
@@ -144,7 +144,8 @@ const typeDefs = `
     clearBooks : Int,
     createUser(
       username: String!,
-      password: String!
+      password: String!,
+      favoriteGenre: [String]
     ) : User,
     login(
       username: String!,
@@ -156,7 +157,13 @@ const typeDefs = `
 const validateInput = (input) => {
   if (input.length < 3) {
     throw new GraphQLError(
-      "Author name or Book title must be at least 3 characters long"
+      "Author name or Book title must be at least 3 characters long",
+      {
+        extensions: {
+          code: "BAD_USER_INPUT",
+          invalidsArgs: input,
+        },
+      }
     );
   }
 };
@@ -200,10 +207,24 @@ const resolvers = {
     allAuthors: async () => {
       return Author.find({});
     },
+    me: async (root, args, context) => {
+      return context.currentUser;
+    },
   },
   Mutation: {
     // Library Mutation
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      const currentUser = context.currentUser;
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "UNAUTHENTICATED",
+            http: {
+              status: 401,
+            },
+          },
+        });
+      }
       validateInput(args.title);
       validateInput(args.author);
       try {
@@ -250,7 +271,18 @@ const resolvers = {
         throw new Error("Failed to add book");
       }
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      const currentUser = context.currentUser;
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "UNAUTHENTICATED",
+            http: {
+              status: 401,
+            },
+          },
+        });
+      }
       validateInput(args.name);
       try {
         const author = await Author.findOne({ name: args.name });
@@ -283,6 +315,7 @@ const resolvers = {
       const user = new User({
         username: args.username,
         password: args.password,
+        favoriteGenre: args.favoriteGenre,
       });
 
       try {
@@ -293,7 +326,7 @@ const resolvers = {
           extensions: {
             code: "BAD_USER_INPUT",
             invalidsArgs: args.username,
-            erorp,
+            error,
           },
         });
       }
@@ -353,6 +386,17 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
+  context: async ({ req, res }) => {
+    const auth = req ? req.headers.authorization : null;
+    if (auth && auth.startsWith("Bearer ")) {
+      const decodedToken = jwt.verify(
+        auth.substring(7),
+        process.env.JWT_SECRET
+      );
+      const currentUser = await User.findById(decodedToken.id);
+      return { currentUser };
+    }
+  },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
