@@ -177,7 +177,9 @@ const resolvers = {
       return Author.find({}).then((data) => data.length);
     },
     allBooks: async (root, args) => {
-      validateInput(args.authors);
+      if (args.author) {
+        validateInput(args.author);
+      }
       var filter = {};
       const author = await Author.findOne({ name: args.author });
       if (args.author && !args.genre && author) {
@@ -205,7 +207,16 @@ const resolvers = {
       return data;
     },
     allAuthors: async () => {
-      return Author.find({});
+      const rawData = await Author.find({}).then((data) => data);
+      const result = await Promise.all(
+        rawData.map(async (author) => {
+          const bookCount = await Book.find({ author: author._id }).then(
+            (data) => data.length
+          );
+          return { ...author._doc, bookCount };
+        })
+      );
+      return result;
     },
     me: async (root, args, context) => {
       return context.currentUser;
