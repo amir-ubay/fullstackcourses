@@ -1,19 +1,18 @@
-import { useQuery } from '@apollo/client'
-import { ALL_AUTHORS } from '../queries'
-import BirthYearAuthor from './BirthYearAuthor'
+import { useQuery } from "@apollo/client";
+import { ALL_AUTHORS } from "../queries";
+import BirthYearAuthor from "./BirthYearAuthor";
 
 const Authors = (props) => {
-  const result = useQuery(ALL_AUTHORS)
-  console.log("result data:", result)  
+  const result = useQuery(ALL_AUTHORS);
 
   if (result.loading) {
-    return <div>loading...</div>
+    return <div>loading...</div>;
   }
 
   if (!props.show) {
-    return null
+    return null;
   }
-  const authors = result.data.allAuthors
+  const authors = result.data.allAuthors;
 
   return (
     <div>
@@ -34,9 +33,9 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <BirthYearAuthor authors={authors} />
+      {props.token && <BirthYearAuthor authors={authors} />}
     </div>
-  )
-}
+  );
+};
 
-export default Authors
+export default Authors;
